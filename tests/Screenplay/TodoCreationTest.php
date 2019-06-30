@@ -7,7 +7,7 @@ use App\Screenplay\Assertion;
 use App\Screenplay\HaveTodo;
 use App\Screenplay\Start;
 use App\Screenplay\TheTodos;
-use PHPUnit\Framework\TestCase;
+use Hamcrest\MatcherAssert;
 
 class GivenThat
 {
@@ -74,11 +74,26 @@ function seeThat($target, $matcher)
     return new Assertion($target, $matcher);
 }
 
-class TodoCreationTest extends TestCase
+class TodoCreationTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * @throws Throwable
+     */
+    public function runBare(): void
+    {
+        MatcherAssert::resetCount();
+        try {
+            parent::runBare();
+        } catch (Throwable $e) {
+        }
+        $this->addToAssertionCount(MatcherAssert::getCount());
+        if (isset($e)) {
+            throw $e;
+        }
+    }
+
+    /**
      * @test
-     * @doesNotPerformAssertions
      */
     public function james_can_create_a_todo()
     {
